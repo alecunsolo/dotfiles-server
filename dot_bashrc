@@ -27,6 +27,18 @@ alias rm='rm -i'
 alias mv='mv -i'
 alias cp='cp -i'
 
+# ls
 alias ls='ls --color=auto'
 alias ll='ls -l --color=auto'
 alias la='ls -la --color=auto'
+
+# Systemd
+alias sc='sudo systemctl'
+
+# Git
+alias g='git'
+alias gst='git status'
+alias gp='git push'
+alias gl='git pull'
+alias gco='git checkout'
+alias gcb='git checkout -b'
