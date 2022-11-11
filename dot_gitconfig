@@ -1,0 +1,12 @@
+[core]
+    autocrlf = input
+    pager = less -FRX
+[init]
+    defaultBranch = main
+[user]
+    name = Alessandro Cunsolo
+    email = alessandro.cunsolo@gmail.com
+[pull]
+    ff = only
+[commit]
+    gpgsign = false
