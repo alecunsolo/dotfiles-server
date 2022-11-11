@@ -1,0 +1,196 @@
+" vim: set filetype=vim:
+" Not always using recent versions
+set nocompatible
+set encoding=utf-8
+
+" Four spaces is enough for a tab
+set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+
+" Hide unsaved buffers
+set hidden
+
+" Backup management
+set nobackup
+set nowritebackup
+
+" vimrc management
+command! ConfReload execute "source $MYVIMRC"
+command! ConfEdit execute ":edit $MYVIMRC"
+
+" Disable Ex mode
+nmap Q <Nop>
+
+" Line numbers
+set number
+set relativenumber
+
+" No arrows
+nnoremap <up> <nop>
+nnoremap <down> <nop>
+nnoremap <left> <nop>
+nnoremap <right> <nop>
+inoremap <up> <nop>
+inoremap <down> <nop>
+inoremap <left> <nop>
+inoremap <right> <nop>
+
+" Wrap stuff
+set nowrap
+nnoremap j gj
+nnoremap k gk
+
+" Whitespaces
+set list
+set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,trail:⌴
+
+" Split behaviour
+set splitright
+set splitbelow
+
+" Leader
+nnoremap <SPACE> <Nop>
+let mapleader=" "
+
+" Split open
+nnoremap gv :vertical wincmd f<CR>
+nnoremap gs :above wincmd f<CR>
+
+" Search stuff
+set ignorecase
+set smartcase
+set showmatch
+
+" File management
+set autowrite
+set autoread
+nnoremap s :w<CR>
+
+" Window management
+nnoremap <leader>c :close<CR>
+nnoremap <leader>o :only<CR>
+
+" Quickly hide hightlight
+nnoremap <leader><space> :noh<cr>
+
+" Paste toggle
+set pastetoggle=<F2>
+
+" Duplicate line
+noremap <Leader>y "zY"zp
+inoremap <Leader>y <Esc>"zY"zpi
+
+" Delete line
+noremap <Leader>d dd
+inoremap <Leader>d <C-O>dd
+
+" Autoinstall vim-plug
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" Specify a directory for plugins
+" - For Neovim: stdpath('data') . '/plugged'
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
+" Interface
+Plug 'vim-airline/vim-airline' " Status bar
+Plug 'morhetz/gruvbox' " Another colour scheme
+Plug 'yggdroot/indentline' " Indent lines
+
+" Misc
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'christoomey/vim-tmux-navigator' " Tmux integration
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-unimpaired'
+
+" VSC
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+
+" Coding
+Plug 'tpope/vim-commentary' " Comment/uncommend stuff
+Plug 'cespare/vim-toml' " TOML syntax
+
+call plug#end()
+
+" Colour scheme
+let g:gruvbox_italic=1
+syntax enable
+silent! colorscheme gruvbox
+set background=dark
+set cursorline
+
+"   ____       _   _
+"  / ___|_   _| |_| |_ ___ _ __
+" | |  _| | | | __| __/ _ \ '__|
+" | |_| | |_| | |_| ||  __/ |
+"  \____|\__,_|\__|\__\___|_|
+
+" vim-gitgutter use this value to update signs
+set updatetime=100
+
+" Always show sign column
+set signcolumn=yes
+
+highlight  SignColumn        ctermbg=235
+highlight  GitGutter         ctermbg=235
+highlight  GruvboxGreenSign  ctermbg=235
+highlight  GruvboxRedSign    ctermbg=235
+highlight  GruvboxAquaSign   ctermbg=235
+
+nmap ]h <Plug>(GitGutterNextHunk)
+nmap [h <Plug>(GitGutterPrevHunk)
+
+" NERDTree
+map <leader>N :NERDTreeToggle<CR>
+
+" Use powerline fonts
+let g:airline_powerline_fonts = 1
+
+" Always show statusbar
+set laststatus=2
+
+" YAML
+augroup FileType_yaml
+    " use 2 spaces tab instead of 4
+    autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+augroup END
+
+" Remove trailing spaces
+" http://vimcasts.org/episodes/tidying-whitespace/
+function! <SID>StripTrailingWhitespaces()
+    " Preparation: save last search, and cursor position.
+    let _s=@/
+    let l = line(".")
+    let c = col(".")
+    " Do the business:
+    %s/\s\+$//e
+    " Clean up: restore previous search history, and cursor position
+    let @/=_s
+    call cursor(l, c)
+endfunction
+nnoremap <silent> <F5> :call <SID>StripTrailingWhitespaces()<CR>
+
+" Clipboard
+if has("macunix")
+  set clipboard=unnamed
+elseif has("unix")
+  set clipboard=unnamedplus
+endif
+
+" Open file in the same directory of the currently open one
+" http://vimcasts.org/episodes/the-edit-command/
+cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
+map <leader>ew :e %%
+map <leader>es :sp %%
+map <leader>ev :vsp %%
+map <leader>et :tabe %%
+
+" 1. base64-encode(visual-selection) -> F6 -> encoded base64-string
+:vnoremap <F6> c<c-r>=system("base64 ", @")<cr><esc>
+
+" 2. base64-decode(visual-selection) -> F7 -> decoded string
+:vnoremap <F7> c<c-r>=system("base64 -d", @")<cr>
