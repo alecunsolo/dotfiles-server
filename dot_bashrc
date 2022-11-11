@@ -1,15 +1,9 @@
 # vim: set filetype=bash:
 # .bashrc
 
-# Source global definitions
-if [ -f /etc/bashrc ]; then
-    source /etc/bashrc
-fi
-
-# User specific environment
-if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
-then
-    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+PATH="$HOME/.local/bin:$HOME/bin:/usr/bin:/usr/local/bin"
+if [[ $(id -u) = 0 ]]; then
+    PATH="$PATH:/usr/sbin:/usr/local/sbin"
 fi
 export PATH
 
