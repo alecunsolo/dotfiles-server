@@ -54,3 +54,8 @@ alias gp='git push'
 alias gl='git pull'
 alias gco='git checkout'
 alias gcb='git checkout -b'
+
+# chezmoi
+alias cz='chezmoi'
+alias cza='chezmoi apply'
+alias czcd='chezmoi cd'
