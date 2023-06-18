@@ -55,3 +55,41 @@ alias gcb='git checkout -b'
 alias cz='chezmoi'
 alias cza='chezmoi apply'
 alias czcd='chezmoi cd'
+
+# Start or attach to a tmux session with the given name ('main' as default)
+function txa() {
+    tmux new-session -A -s ${1:-main}
+}
+
+# Create a temporary directory and go there
+function mkdt() {
+    local dir
+    dir=$(mktemp -d)
+    cd $dir
+}
+
+# Reconnect to ssh-agent. Use with caution
+# See: https://tychoish.com/post/9-awesome-ssh-tricks/
+function ssh-reagent () {
+  for agent in /tmp/ssh-*/agent.*; do
+      export SSH_AUTH_SOCK=$agent
+      if ssh-add -l 2>&1 > /dev/null; then
+         echo "Found working SSH Agent:"
+         ssh-add -l
+         return
+      fi
+  done
+  echo "Cannot find ssh agent - maybe you should reconnect and forward it?"
+}
+
+# Remove host(s) from known_hosts
+function ssh-unknow-hosts() {
+    if [ ${#@[@]} -eq 0 ]; then
+        echo "Must pass at least one host"
+        return 1
+    fi
+    for host in $@; do
+        ssh-keygen -R $host
+    done
+}
+
