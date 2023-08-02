@@ -11,6 +11,7 @@ export PATH
 
 # Prompt
 RED='\[\033[1;31m\]'
+MAGENTA='\[\033[1;35m\]'
 BLUE='\[\033[1;34m\]'
 YELLOW='\[\033[1;33m\]'
 GREEN='\[\033[1;32m\]'
@@ -18,10 +19,10 @@ RESET='\[\033[0m\]'
 
 if [[ $(id -u) = 0 ]]; then
     # Root
-    PS1="${YELLOW}"$'\u26A1'"${RESET}${RED}\u@\h${RESET}:${BLUE}\w${RESET} \\$ "
+    PS1="${YELLOW}"$'\u26A1'"${RESET}${RED}\u@\h${RESET}:${BLUE}\w${MAGENTA}\$(git-current-branch)${RESET} \\$ "
 else
     # Regular user
-    PS1="${GREEN}\u@\h${RESET}:${BLUE}\w${RESET} \\$ "
+    PS1="${GREEN}\u@\h${RESET}:${BLUE}\w${MAGENTA}q\$(git-current-branch)${RESET} \\$ "
 fi
 
 export EDITOR=vim
@@ -103,3 +104,9 @@ function ssh-unknow-hosts() {
     done
 }
 
+function git-current-branch() {
+    # The first sed expression will delete all the rows not starting
+    # with '*' (the not current ones). The second one will just print
+    # the branch name inside parentheses.
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
